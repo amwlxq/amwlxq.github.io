@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -15,7 +15,7 @@ body{background:#050a1f;background-image:radial-gradient(circle at 20% 10%,rgba(
 .si{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:18px}
 .ii{padding:8px 16px;background:rgba(0,60,120,.4);border-radius:8px;border:1px solid #409eff}
 .m{display:flex;flex-direction:column;align-items:center;margin:30px 0}
-.cb{width:220px;height:220px;border-radius:50%;border:3px solid #9c88ff;background:linear-gradient(145deg,#102852,#0a1933);color:#fff;font-size:24px;font-weight:bold;cursor:pointer;box-shadow:0 0 25px #9c88ff,inset 0 0 20px rgba(156,136,255,.3);transition:.15s;user-select:none}
+.cb{width:220px;height:220px;max-width: 80vw;max-height: 80vw;border-radius:50%;border:3px solid #9c88ff;background:linear-gradient(145deg,#102852,#0a1933);color:#fff;font-size:24px;font-weight:bold;cursor:pointer;box-shadow:0 0 25px #9c88ff,inset 0 0 20px rgba(156,136,255,.3);transition:.2s;user-select:none}
 .cb:active{transform:scale(.92);box-shadow:0 0 40px #9c88ff}
 .fb{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:25px 0}
 .fb button{padding:12px 24px;border:1px solid #00d8d6;background:rgba(0,80,100,.5);color:#00d8d6;border-radius:8px;font-size:16px;cursor:pointer;box-shadow:0 0 8px rgba(0,216,214,.4)}
@@ -98,37 +98,319 @@ body{background:#050a1f;background-image:radial-gradient(circle at 20% 10%,rgba(
 </div>
 </div>
 <script>
-const k="csd",dd={lv:1,lex:0,nlex:100,er:1.3,pt:0,cb:1,clv:0,cc:50,alv:0,ac:80,ap:0,tc:0,tp:0,ah:[],ph:[]};
+const k="csd";
+// 初始数据：新增翻倍道具限购标记
+const dd={
+    lv:1,lex:0,nlex:100,er:1.3,pt:0,cb:1,
+    clv:0,cc:50,alv:0,ac:80,ap:0,
+    tc:0,tp:0,ah:[],ph:[],
+    buyDouble: false
+};
 let g={};
-const a=[{i:0,n:"新手启程",d:"达到2级",t:"lv",v:2},{i:1,n:"初级积累",d:"累计获得500点数",t:"pt",v:500},{i:2,n:"稳步成长",d:"达到5级",t:"lv",v:5},{i:3,n:"勤劳点击",d:"累计点击100次",t:"ck",v:100},{i:4,n:"进阶玩家",d:"达到10级",t:"lv",v:10},{i:5,n:"点数达人",d:"累计获得2000点数",t:"pt",v:2000},{i:6,n:"点击狂魔",d:"累计点击500次",t:"ck",v:500},{i:7,n:"等级先锋",d:"达到20级",t:"lv",v:20},{i:8,n:"财富积累",d:"累计获得5000点数",t:"pt",v:5000},{i:9,n:"手速大师",d:"累计点击1000次",t:"ck",v:1000},{i:10,n:"高阶强者",d:"达到30级",t:"lv",v:30},{i:11,n:"点数富翁",d:"累计获得10000点数",t:"pt",v:10000},{i:12,n:"无尽点击",d:"累计点击3000次",t:"ck",v:3000},{i:13,n:"顶级行者",d:"达到50级",t:"lv",v:50},{i:14,n:"终极传说",d:"累计获得50000点数",t:"pt",v:50000}];
-const p=[{i:0,n:"蓝焰灵狐",d:"初级辅助宠物",ul:2,b:"点击+1点数"},{i:1,n:"星翼飞鸟",d:"轻盈的星际生物",ul:4,b:"升级经验+5%"},{i:2,n:"机械战狼",d:"合金打造的战斗宠物",ul:6,b:"点击+2点数"},{i:3,n:"幽光水母",d:"深海发光生物",ul:8,b:"升级经验+8%"},{i:4,n:"量子灵猫",d:"穿梭量子空间的灵宠",ul:10,b:"点击+3点数"},{i:5,n:"雷霆巨熊",d:"掌控雷电之力",ul:15,b:"升级经验+10%"},{i:6,n:"虚空蝶影",d:"来自虚空的神秘蝴蝶",ul:20,b:"点击+4点数"},{i:7,n:"熔岩蜥龙",d:"火山孕育的龙族幼体",ul:25,b:"升级经验+12%"},{i:8,n:"时空守卫",d:"守护时间线的机械守卫",ul:35,b:"点击+5点数"},{i:9,n:"幻界神凤",d:"传说级神鸟",ul:50,b:"点击+6 经验+15%"}];
-const s=[{n:"小型点数包",d:"立即+10点数",c:30},{n:"中型点数包",d:"立即+50点数",c:120},{n:"大型点数包",d:"立即+200点数",c:400},{n:"点击增幅剂",d:"单次点击点数翻倍(永久)",c:600},{n:"升级水晶",d:"直接提升1级",c:1500}];
+
+// 成就列表
+const a=[
+    {i:0,n:"新手启程",d:"达到2级",t:"lv",v:2},
+    {i:1,n:"初级积累",d:"累计获得500点数",t:"pt",v:500},
+    {i:2,n:"稳步成长",d:"达到5级",t:"lv",v:5},
+    {i:3,n:"勤劳点击",d:"累计点击100次",t:"ck",v:100},
+    {i:4,n:"进阶玩家",d:"达到10级",t:"lv",v:10},
+    {i:5,n:"点数达人",d:"累计获得2000点数",t:"pt",v:2000},
+    {i:6,n:"点击狂魔",d:"累计点击500次",t:"ck",v:500},
+    {i:7,n:"等级先锋",d:"达到20级",t:"lv",v:20},
+    {i:8,n:"财富积累",d:"累计获得5000点数",t:"pt",v:5000},
+    {i:9,n:"手速大师",d:"累计点击1000次",t:"ck",v:1000},
+    {i:10,n:"高阶强者",d:"达到30级",t:"lv",v:30},
+    {i:11,n:"点数富翁",d:"累计获得10000点数",t:"pt",v:10000},
+    {i:12,n:"无尽点击",d:"累计点击3000次",t:"ck",v:3000},
+    {i:13,n:"顶级行者",d:"达到50级",t:"lv",v:50},
+    {i:14,n:"终极传说",d:"累计获得50000点数",t:"pt",v:50000}
+];
+
+// 宠物列表
+const p=[
+    {i:0,n:"蓝焰灵狐",d:"初级辅助宠物",ul:2,b:"点击+1点数"},
+    {i:1,n:"星翼飞鸟",d:"轻盈的星际生物",ul:4,b:"升级经验+5%"},
+    {i:2,n:"机械战狼",d:"合金打造的战斗宠物",ul:6,b:"点击+2点数"},
+    {i:3,n:"幽光水母",d:"深海发光生物",ul:8,b:"升级经验+8%"},
+    {i:4,n:"量子灵猫",d:"穿梭量子空间的灵宠",ul:10,b:"点击+3点数"},
+    {i:5,n:"雷霆巨熊",d:"掌控雷电之力",ul:15,b:"升级经验+10%"},
+    {i:6,n:"虚空蝶影",d:"来自虚空的神秘蝴蝶",ul:20,b:"点击+4点数"},
+    {i:7,n:"熔岩蜥龙",d:"火山孕育的龙族幼体",ul:25,b:"升级经验+12%"},
+    {i:8,n:"时空守卫",d:"守护时间线的机械守卫",ul:35,b:"点击+5点数"},
+    {i:9,n:"幻界神凤",d:"传说级神鸟",ul:50,b:"点击+6 经验+15%"}
+];
+
+// 商店：改为概率抽奖 + 功能道具，平衡游戏
+const s=[
+    {n:"幸运抽奖·小",d:"消耗30点数，随机获得10~80点数",c:30},
+    {n:"幸运抽奖·中",d:"消耗120点数，随机获得50~250点数",c:120},
+    {n:"幸运抽奖·大",d:"消耗400点数，随机获得200~700点数",c:400},
+    {n:"点击增幅剂",d:"单次点击点数翻倍(永久，限购1次)",c:600},
+    {n:"升级水晶",d:"直接提升1级",c:1500}
+];
+
 const $=id=>document.getElementById(id);
-function ld(){let e=localStorage.getItem(k);g=e?JSON.parse(e):JSON.parse(JSON.stringify(dd))}
-function sv(){localStorage.setItem(k,JSON.stringify(g))}
-function cl(){if(confirm("确定要删除吗，数据将会永久消失（真的很久）")){localStorage.removeItem(k);g=JSON.parse(JSON.stringify(dd));up()}}
-function atip(n){let t=$("at");t.innerText="🎉 达成成就："+n;t.style.display="block";setTimeout(()=>t.style.display="none",2000)}
-function cka(){a.forEach(x=>{if(g.ah.includes(x.i))return;let f=!1;if(x.t=="lv")f=g.lv>=x.v;else if(x.t=="pt")f=g.tp>=x.v;else if(x.t=="ck")f=g.tc>=x.v;if(f){g.ah.push(x.i);atip(x.n)}})}
-function ckp(){p.forEach(x=>{if(g.ph.includes(x.i))return;if(g.lv>=x.ul)g.ph.push(x.i)})}
-function rha(){let h="";a.forEach(x=>{let c=g.ah.includes(x.i)?"gi gic":"gi";h+=`<div class="${c}"><h3>${x.n}</h3><p>${x.d}</p></div>`});$("hl").innerHTML=h}
-function rhp(){let h="";p.forEach(x=>{let c=g.ph.includes(x.i)?"gi gic":"gi";let s=g.lv>=x.ul?"已解锁":"等级"+x.ul+"解锁";h+=`<div class="${c}"><h3>${x.n}</h3><p>${x.d}</p><p>加成：${x.b}</p><p>状态：${s}</p></div>`});$("pl").innerHTML=h}
-function rhs(){let h="";s.forEach((x,i)=>h+=`<div class="gi"><h3>${x.n}</h3><p>${x.d}</p><p>售价：${x.c} 点数</p><button class="ab" onclick="buy(${i})">购买</button></div>`);$("sl").innerHTML=h}
-function gpb(){let ca=0,ea=0;g.ph.forEach(id=>{let x=p[id];if(x.b.includes("+1"))ca+=1;if(x.b.includes("+2"))ca+=2;if(x.b.includes("+3"))ca+=3;if(x.b.includes("+4"))ca+=4;if(x.b.includes("+5"))ca+=5;if(x.b.includes("+6"))ca+=6;if(x.b.includes("5%"))ea+=5;if(x.b.includes("8%"))ea+=8;if(x.b.includes("10%"))ea+=10;if(x.b.includes("12%"))ea+=12;if(x.b.includes("15%"))ea+=15});return{ca,ea}}
-function gcp(){let b=gpb();return g.cb+g.clv+b.ca}
-function gce(){let b=gpb(),bs=gcp(),r=1+(g.ap+b.ea)/100;return Math.floor(bs*r)}
-function up(){cka();ckp();$("lv").innerText=g.lv;$("lex").innerText=g.lex;$("nlex").innerText=Math.floor(g.nlex);$("pt").innerText=g.pt;$("cg").innerText=gcp();$("clv").innerText=g.clv;$("ce").innerText=g.cb+g.clv;$("cc").innerText=g.cc;$("alv").innerText=g.alv;$("ae").innerText=g.ap;$("ac").innerText=g.ac;rha();rhp();sv()}
-function lu(){g.lv++;g.nlex=Math.floor(g.nlex*g.er)}
-function buy(i){let x=s[i];if(g.pt<x.c)return alert("经验点数不足");g.pt-=x.c;switch(i){case 0:g.pt+=10;g.tp+=10;break;case 1:g.pt+=50;g.tp+=50;break;case 2:g.pt+=200;g.tp+=200;break;case 3:g.cb*=2;break;case 4:g.lex=0;lu();break}while(g.lex>=g.nlex){g.lex-=g.nlex;lu()}up();alert("购买成功！")}
+
+// 读取本地数据（增加容错，防止存储损坏报错）
+function ld(){
+    let e=localStorage.getItem(k);
+    try{
+        g=e?JSON.parse(e):JSON.parse(JSON.stringify(dd));
+    }catch(err){
+        g=JSON.parse(JSON.stringify(dd));
+    }
+}
+
+// 保存数据
+function sv(){
+    localStorage.setItem(k,JSON.stringify(g));
+}
+
+// 删除全部数据
+function cl(){
+    if(confirm("确定要删除所有游戏数据吗？数据删除后无法恢复！")){
+        localStorage.removeItem(k);
+        g=JSON.parse(JSON.stringify(dd));
+        up();
+    }
+}
+
+// 成就提示弹窗
+function atip(n){
+    let t=$("at");
+    t.innerText="🎉 达成成就："+n;
+    t.style.display="block";
+    setTimeout(()=>t.style.display="none",2000);
+}
+
+// 检测并解锁成就
+function cka(){
+    a.forEach(x=>{
+        if(g.ah.includes(x.i))return;
+        let f=false;
+        if(x.t=="lv")f=g.lv>=x.v;
+        else if(x.t=="pt")f=g.tp>=x.v;
+        else if(x.t=="ck")f=g.tc>=x.v;
+        if(f){
+            g.ah.push(x.i);
+            atip(x.n);
+        }
+    });
+}
+
+// 检测解锁宠物
+function ckp(){
+    p.forEach(x=>{
+        if(g.ph.includes(x.i))return;
+        if(g.lv>=x.ul)g.ph.push(x.i);
+    });
+}
+
+// 渲染成就列表
+function rha(){
+    let h="";
+    a.forEach(x=>{
+        let c=g.ah.includes(x.i)?"gi gic":"gi";
+        h+=`<div class="${c}"><h3>${x.n}</h3><p>${x.d}</p></div>`;
+    });
+    $("hl").innerHTML=h;
+}
+
+// 渲染宠物列表
+function rhp(){
+    let h="";
+    p.forEach(x=>{
+        let c=g.ph.includes(x.i)?"gi gic":"gi";
+        let s=g.lv>=x.ul?"已解锁":"等级"+x.ul+"解锁";
+        h+=`<div class="${c}"><h3>${x.n}</h3><p>${x.d}</p><p>加成：${x.b}</p><p>状态：${s}</p></div>`;
+    });
+    $("pl").innerHTML=h;
+}
+
+// 渲染商店列表
+function rhs(){
+    let h="";
+    s.forEach((x,i)=>h+=`<div class="gi"><h3>${x.n}</h3><p>${x.d}</p><p>售价：${x.c} 点数</p><button class="ab" onclick="buy(${i})">购买</button></div>`);
+    $("sl").innerHTML=h;
+}
+
+// 计算宠物加成
+function gpb(){
+    let ca=0,ea=0;
+    g.ph.forEach(id=>{
+        let x=p[id];
+        if(x.b.includes("+1"))ca+=1;
+        if(x.b.includes("+2"))ca+=2;
+        if(x.b.includes("+3"))ca+=3;
+        if(x.b.includes("+4"))ca+=4;
+        if(x.b.includes("+5"))ca+=5;
+        if(x.b.includes("+6"))ca+=6;
+        if(x.b.includes("5%"))ea+=5;
+        if(x.b.includes("8%"))ea+=8;
+        if(x.b.includes("10%"))ea+=10;
+        if(x.b.includes("12%"))ea+=12;
+        if(x.b.includes("15%"))ea+=15;
+    });
+    return{ca,ea};
+}
+
+// 单次点击【点数】（不受经验加成影响）
+function gcp(){
+    let b=gpb();
+    return g.cb+g.clv+b.ca;
+}
+
+// 单次点击【经验】（修复核心BUG，基础经验固定1点，受加成影响）
+function gce(){
+    let baseExp=1;
+    let b=gpb();
+    let totalRate=1+(g.ap+b.ea)/100;
+    return Math.floor(baseExp*totalRate);
+}
+
+// 刷新全部界面 + 检测成就宠物 + 保存数据
+function up(){
+    cka();
+    ckp();
+    $("lv").innerText=g.lv;
+    $("lex").innerText=g.lex;
+    $("nlex").innerText=Math.floor(g.nlex);
+    $("pt").innerText=g.pt;
+    $("cg").innerText=gcp();
+    $("clv").innerText=g.clv;
+    $("ce").innerText=g.cb+g.clv;
+    $("cc").innerText=g.cc;
+    $("alv").innerText=g.alv;
+    $("ae").innerText=g.ap;
+    $("ac").innerText=g.ac;
+    rha();
+    rhp();
+    sv();
+}
+
+// 升级等级
+function lu(){
+    g.lv++;
+    g.nlex=Math.floor(g.nlex*g.er);
+}
+
+// 商店购买逻辑（抽奖+限购）
+function buy(i){
+    let x=s[i];
+    if(g.pt<x.c){
+        return alert("经验点数不足！");
+    }
+    g.pt-=x.c;
+
+    switch(i){
+        // 小型抽奖 10~80
+        case 0:
+            let num1=Math.floor(Math.random()*71)+10;
+            g.pt+=num1;
+            g.tp+=num1;
+            alert(`抽奖成功！获得 ${num1} 点数`);
+            break;
+        // 中型抽奖 50~250
+        case 1:
+            let num2=Math.floor(Math.random()*201)+50;
+            g.pt+=num2;
+            g.tp+=num2;
+            alert(`抽奖成功！获得 ${num2} 点数`);
+            break;
+        // 大型抽奖 200~700
+        case 2:
+            let num3=Math.floor(Math.random()*501)+200;
+            g.pt+=num3;
+            g.tp+=num3;
+            alert(`抽奖成功！获得 ${num3} 点数`);
+            break;
+        // 点击翻倍（限购1次）
+        case 3:
+            if(g.buyDouble){
+                alert("该道具已购买，无法重复购买！");
+                return;
+            }
+            g.cb*=2;
+            g.buyDouble=true;
+            alert("购买成功！点击点数永久翻倍");
+            break;
+        // 升级水晶
+        case 4:
+            g.lex=0;
+            lu();
+            alert("使用升级水晶，直接提升1级！");
+            break;
+    }
+
+    // 经验溢出自动升级
+    while(g.lex>=g.nlex){
+        g.lex-=g.nlex;
+        lu();
+    }
+    up();
+}
+
+// 绑定按钮事件
 $("d").onclick=cl;
+
+// 关闭弹窗按钮
 document.querySelectorAll(".cmb").forEach(x=>x.onclick=()=>$(x.dataset.c).style.display="none");
+
+// 打开弹窗（打开前刷新列表，修复UI不同步）
 $("ba").onclick=()=>$("ma").style.display="flex";
-$("bh").onclick=()=>$("mh").style.display="flex";
-$("bp").onclick=()=>$("mp").style.display="flex";
-$("bs").onclick=()=>$("ms").style.display="flex";
-$("cb").onclick=function(){let cp=gcp(),ce=gce();g.pt+=cp;g.lex+=ce;g.tc++;g.tp+=cp;while(g.lex>=g.nlex){g.lex-=g.nlex;lu()}up()}
-$("uc").onclick=function(){if(g.pt<g.cc)return alert("经验点数不足");g.pt-=g.cc;g.clv++;g.cc=Math.floor(g.cc*1.4);up()}
-$("ua").onclick=function(){if(g.pt<g.ac)return alert("经验点数不足");g.pt-=g.ac;g.alv++;g.ap+=5;g.ac=Math.floor(g.ac*1.5);up()}
-window.onload=()=>{ld();rhs();up()}
+$("bh").onclick=()=>{rha();$("mh").style.display="flex";};
+$("bp").onclick=()=>{rhp();$("mp").style.display="flex";};
+$("bs").onclick=()=>{rhs();$("ms").style.display="flex";};
+
+// 主点击按钮
+$("cb").onclick=function(){
+    let cp=gcp(),ce=gce();
+    g.pt+=cp;
+    g.lex+=ce;
+    g.tc++;
+    g.tp+=cp;
+    while(g.lex>=g.nlex){
+        g.lex-=g.nlex;
+        lu();
+    }
+    up();
+};
+
+// 升级点击收益
+$("uc").onclick=function(){
+    if(g.pt<g.cc)return alert("经验点数不足！");
+    g.pt-=g.cc;
+    g.clv++;
+    g.cc=Math.floor(g.cc*1.4);
+    up();
+};
+
+// 升级经验加成
+$("ua").onclick=function(){
+    if(g.pt<g.ac)return alert("经验点数不足！");
+    g.pt-=g.ac;
+    g.alv++;
+    g.ap+=5;
+    g.ac=Math.floor(g.ac*1.5);
+    up();
+};
+
+// 点击弹窗遮罩空白处关闭弹窗
+document.querySelectorAll(".mo").forEach(modal=>{
+    modal.addEventListener("click",e=>{
+        if(e.target===modal){
+            modal.style.display="none";
+        }
+    })
+});
+
+// 页面初始化
+window.onload=()=>{
+    ld();
+    rhs();
+    up();
+}
 </script>
 </body>
 </html>
