@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>点击升级</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif}
+body{background:#050a1f;background-image:radial-gradient(circle at 20% 10%,rgba(0,150,255,.15) 0,transparent 40%),radial-gradient(circle at 80% 90%,rgba(180,80,255,.15) 0,transparent 40%);color:#e0f0ff;min-height:100vh}
+.c{max-width:1200px;margin:0 auto;padding:20px}
+.tb{display:flex;justify-content:center;gap:15px;margin-bottom:15px}
+.db{padding:10px 20px;border:1px solid #e74c3c;background:rgba(80,20,20,.4);color:#e74c3c;border-radius:8px;cursor:pointer}
+.sb{background:rgba(0,30,80,.6);border:1px solid #00a8ff;box-shadow:0 0 15px #00a8ff,inset 0 0 10px rgba(0,168,255,.2);border-radius:12px;padding:20px;margin-bottom:20px;text-align:center}
+.sb h1{color:#00e5ff;text-shadow:0 0 8px #00e5ff;margin-bottom:15px;font-size:28px}
+.si{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:18px}
+.ii{padding:8px 16px;background:rgba(0,60,120,.4);border-radius:8px;border:1px solid #409eff}
+.m{display:flex;flex-direction:column;align-items:center;margin:30px 0}
+.cb{width:220px;height:220px;border-radius:50%;border:3px solid #9c88ff;background:linear-gradient(145deg,#102852,#0a1933);color:#fff;font-size:24px;font-weight:bold;cursor:pointer;box-shadow:0 0 25px #9c88ff,inset 0 0 20px rgba(156,136,255,.3);transition:.15s;user-select:none}
+.cb:active{transform:scale(.92);box-shadow:0 0 40px #9c88ff}
+.fb{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:25px 0}
+.fb button{padding:12px 24px;border:1px solid #00d8d6;background:rgba(0,80,100,.5);color:#00d8d6;border-radius:8px;font-size:16px;cursor:pointer;box-shadow:0 0 8px rgba(0,216,214,.4)}
+.mo{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.mob{width:90%;max-width:800px;max-height:85vh;background:#081430;border:2px solid #797dff;box-shadow:0 0 30px #797dff;border-radius:15px;padding:25px;overflow-y:auto}
+.moh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid #4050a0}
+.mot{font-size:22px;color:#b0b8ff;text-shadow:0 0 6px #797dff}
+.cmb{padding:6px 14px;border:1px solid #ff6b6b;color:#ff6b6b;background:transparent;border-radius:6px;cursor:pointer;font-size:16px}
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
+.gi{background:rgba(20,40,90,.6);border:1px solid #3498db;border-radius:10px;padding:15px}
+.gi h3{color:#5dade2;margin-bottom:8px}
+.gi p{font-size:14px;color:#c0d8f8}
+.gic h3{color:#ff9800;text-shadow:0 0 4px #ff9800}
+.at{position:fixed;top:30px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff7b00,#ff3d00);color:#fff;padding:15px 30px;border-radius:10px;font-size:18px;font-weight:bold;box-shadow:0 0 20px #ff7b00;z-index:1000;display:none}
+.ai{display:flex;justify-content:space-between;align-items:center;background:rgba(20,40,90,.6);border:1px solid #9b59b6;border-radius:10px;padding:15px;margin-bottom:12px}
+.ab{padding:8px 18px;border:1px solid #9b59b6;color:#9b59b6;background:transparent;border-radius:6px;cursor:pointer}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-thumb{background:#409eff;border-radius:4px}
+::-webkit-scrollbar-track{background:#0a1933}
+</style>
+</head>
+<body>
+<div class="c">
+<div class="tb"><button class="db" id="d">删除全部数据</button></div>
+<div class="sb">
+<h1>点击升级</h1>
+<div class="si">
+<div class="ii">当前等级：<span id="lv">1</span></div>
+<div class="ii">升级经验：<span id="lex">0</span> / <span id="nlex">100</span></div>
+<div class="ii">经验点数：<span id="pt">0</span></div>
+<div class="ii">单次点击：<span id="cg">1</span> 点数</div>
+</div>
+</div>
+<div class="m"><button class="cb" id="cb">点击获取点数</button></div>
+<div class="fb">
+<button id="ba">属性升级</button>
+<button id="bh">成就系统</button>
+<button id="bp">宠物列表</button>
+<button id="bs">道具商店</button>
+</div>
+</div>
+<div class="at" id="at"></div>
+<div class="mo" id="ma">
+<div class="mob">
+<div class="moh"><div class="mot">属性强化升级</div><button class="cmb" data-c="ma">关闭</button></div>
+<div class="ai">
+<div>
+<h3>点击收益强化</h3>
+<p>等级：<span id="clv">0</span> | 效果：每次点击+<span id="ce">1</span> 点数</p>
+<p>升级消耗点数：<span id="cc">50</span></p>
+</div>
+<button class="ab" id="uc">升级</button>
+</div>
+<div class="ai">
+<div>
+<h3>升级经验加成</h3>
+<p>等级：<span id="alv">0</span> | 效果：升级经验获取 +<span id="ae">0</span>%</p>
+<p>升级消耗点数：<span id="ac">80</span></p>
+</div>
+<button class="ab" id="ua">升级</button>
+</div>
+</div>
+</div>
+<div class="mo" id="mh">
+<div class="mob">
+<div class="moh"><div class="mot">成就系统</div><button class="cmb" data-c="mh">关闭</button></div>
+<div class="gl" id="hl"></div>
+</div>
+</div>
+<div class="mo" id="mp">
+<div class="mob">
+<div class="moh"><div class="mot">宠物图鉴</div><button class="cmb" data-c="mp">关闭</button></div>
+<div class="gl" id="pl"></div>
+</div>
+</div>
+<div class="mo" id="ms">
+<div class="mob">
+<div class="moh"><div class="mot">道具商店</div><button class="cmb" data-c="ms">关闭</button></div>
+<div class="gl" id="sl"></div>
+</div>
+</div>
+<script>
+const k="csd",dd={lv:1,lex:0,nlex:100,er:1.3,pt:0,cb:1,clv:0,cc:50,alv:0,ac:80,ap:0,tc:0,tp:0,ah:[],ph:[]};
+let g={};
+const a=[{i:0,n:"新手启程",d:"达到2级",t:"lv",v:2},{i:1,n:"初级积累",d:"累计获得500点数",t:"pt",v:500},{i:2,n:"稳步成长",d:"达到5级",t:"lv",v:5},{i:3,n:"勤劳点击",d:"累计点击100次",t:"ck",v:100},{i:4,n:"进阶玩家",d:"达到10级",t:"lv",v:10},{i:5,n:"点数达人",d:"累计获得2000点数",t:"pt",v:2000},{i:6,n:"点击狂魔",d:"累计点击500次",t:"ck",v:500},{i:7,n:"等级先锋",d:"达到20级",t:"lv",v:20},{i:8,n:"财富积累",d:"累计获得5000点数",t:"pt",v:5000},{i:9,n:"手速大师",d:"累计点击1000次",t:"ck",v:1000},{i:10,n:"高阶强者",d:"达到30级",t:"lv",v:30},{i:11,n:"点数富翁",d:"累计获得10000点数",t:"pt",v:10000},{i:12,n:"无尽点击",d:"累计点击3000次",t:"ck",v:3000},{i:13,n:"顶级行者",d:"达到50级",t:"lv",v:50},{i:14,n:"终极传说",d:"累计获得50000点数",t:"pt",v:50000}];
+const p=[{i:0,n:"蓝焰灵狐",d:"初级辅助宠物",ul:2,b:"点击+1点数"},{i:1,n:"星翼飞鸟",d:"轻盈的星际生物",ul:4,b:"升级经验+5%"},{i:2,n:"机械战狼",d:"合金打造的战斗宠物",ul:6,b:"点击+2点数"},{i:3,n:"幽光水母",d:"深海发光生物",ul:8,b:"升级经验+8%"},{i:4,n:"量子灵猫",d:"穿梭量子空间的灵宠",ul:10,b:"点击+3点数"},{i:5,n:"雷霆巨熊",d:"掌控雷电之力",ul:15,b:"升级经验+10%"},{i:6,n:"虚空蝶影",d:"来自虚空的神秘蝴蝶",ul:20,b:"点击+4点数"},{i:7,n:"熔岩蜥龙",d:"火山孕育的龙族幼体",ul:25,b:"升级经验+12%"},{i:8,n:"时空守卫",d:"守护时间线的机械守卫",ul:35,b:"点击+5点数"},{i:9,n:"幻界神凤",d:"传说级神鸟",ul:50,b:"点击+6 经验+15%"}];
+const s=[{n:"小型点数包",d:"立即+10点数",c:30},{n:"中型点数包",d:"立即+50点数",c:120},{n:"大型点数包",d:"立即+200点数",c:400},{n:"点击增幅剂",d:"单次点击点数翻倍(永久)",c:600},{n:"升级水晶",d:"直接提升1级",c:1500}];
+const $=id=>document.getElementById(id);
+function ld(){let e=localStorage.getItem(k);g=e?JSON.parse(e):JSON.parse(JSON.stringify(dd))}
+function sv(){localStorage.setItem(k,JSON.stringify(g))}
+function cl(){if(confirm("确定要删除吗，数据将会永久消失（真的很久）")){localStorage.removeItem(k);g=JSON.parse(JSON.stringify(dd));up()}}
+function atip(n){let t=$("at");t.innerText="🎉 达成成就："+n;t.style.display="block";setTimeout(()=>t.style.display="none",2000)}
+function cka(){a.forEach(x=>{if(g.ah.includes(x.i))return;let f=!1;if(x.t=="lv")f=g.lv>=x.v;else if(x.t=="pt")f=g.tp>=x.v;else if(x.t=="ck")f=g.tc>=x.v;if(f){g.ah.push(x.i);atip(x.n)}})}
+function ckp(){p.forEach(x=>{if(g.ph.includes(x.i))return;if(g.lv>=x.ul)g.ph.push(x.i)})}
+function rha(){let h="";a.forEach(x=>{let c=g.ah.includes(x.i)?"gi gic":"gi";h+=`<div class="${c}"><h3>${x.n}</h3><p>${x.d}</p></div>`});$("hl").innerHTML=h}
+function rhp(){let h="";p.forEach(x=>{let c=g.ph.includes(x.i)?"gi gic":"gi";let s=g.lv>=x.ul?"已解锁":"等级"+x.ul+"解锁";h+=`<div class="${c}"><h3>${x.n}</h3><p>${x.d}</p><p>加成：${x.b}</p><p>状态：${s}</p></div>`});$("pl").innerHTML=h}
+function rhs(){let h="";s.forEach((x,i)=>h+=`<div class="gi"><h3>${x.n}</h3><p>${x.d}</p><p>售价：${x.c} 点数</p><button class="ab" onclick="buy(${i})">购买</button></div>`);$("sl").innerHTML=h}
+function gpb(){let ca=0,ea=0;g.ph.forEach(id=>{let x=p[id];if(x.b.includes("+1"))ca+=1;if(x.b.includes("+2"))ca+=2;if(x.b.includes("+3"))ca+=3;if(x.b.includes("+4"))ca+=4;if(x.b.includes("+5"))ca+=5;if(x.b.includes("+6"))ca+=6;if(x.b.includes("5%"))ea+=5;if(x.b.includes("8%"))ea+=8;if(x.b.includes("10%"))ea+=10;if(x.b.includes("12%"))ea+=12;if(x.b.includes("15%"))ea+=15});return{ca,ea}}
+function gcp(){let b=gpb();return g.cb+g.clv+b.ca}
+function gce(){let b=gpb(),bs=gcp(),r=1+(g.ap+b.ea)/100;return Math.floor(bs*r)}
+function up(){cka();ckp();$("lv").innerText=g.lv;$("lex").innerText=g.lex;$("nlex").innerText=Math.floor(g.nlex);$("pt").innerText=g.pt;$("cg").innerText=gcp();$("clv").innerText=g.clv;$("ce").innerText=g.cb+g.clv;$("cc").innerText=g.cc;$("alv").innerText=g.alv;$("ae").innerText=g.ap;$("ac").innerText=g.ac;rha();rhp();sv()}
+function lu(){g.lv++;g.nlex=Math.floor(g.nlex*g.er)}
+function buy(i){let x=s[i];if(g.pt<x.c)return alert("经验点数不足");g.pt-=x.c;switch(i){case 0:g.pt+=10;g.tp+=10;break;case 1:g.pt+=50;g.tp+=50;break;case 2:g.pt+=200;g.tp+=200;break;case 3:g.cb*=2;break;case 4:g.lex=0;lu();break}while(g.lex>=g.nlex){g.lex-=g.nlex;lu()}up();alert("购买成功！")}
+$("d").onclick=cl;
+document.querySelectorAll(".cmb").forEach(x=>x.onclick=()=>$(x.dataset.c).style.display="none");
+$("ba").onclick=()=>$("ma").style.display="flex";
+$("bh").onclick=()=>$("mh").style.display="flex";
+$("bp").onclick=()=>$("mp").style.display="flex";
+$("bs").onclick=()=>$("ms").style.display="flex";
+$("cb").onclick=function(){let cp=gcp(),ce=gce();g.pt+=cp;g.lex+=ce;g.tc++;g.tp+=cp;while(g.lex>=g.nlex){g.lex-=g.nlex;lu()}up()}
+$("uc").onclick=function(){if(g.pt<g.cc)return alert("经验点数不足");g.pt-=g.cc;g.clv++;g.cc=Math.floor(g.cc*1.4);up()}
+$("ua").onclick=function(){if(g.pt<g.ac)return alert("经验点数不足");g.pt-=g.ac;g.alv++;g.ap+=5;g.ac=Math.floor(g.ac*1.5);up()}
+window.onload=()=>{ld();rhs();up()}
+</script>
+</body>
+</html>
