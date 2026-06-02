@@ -5,7 +5,7 @@ m = 0
 h = 0
 while True:
     ms += 1
-    if ms == 1000:
+    if ms == 100:
         s += 1
         ms = 0
     if s == 60:
@@ -15,9 +15,7 @@ while True:
         h += 1
         m = 0
     if ms < 10:
-        print(f'{h}:{m}:{s}.00{ms}')
-    if ms < 100 and ms > 9:
         print(f'{h}:{m}:{s}.0{ms}')
-    if ms<1000 and ms>99:
+    else:
         print(f'{h}:{m}:{s}.{ms}')
-    time.sleep(0.001)
+    time.sleep(0.01)
