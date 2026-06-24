@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP 更新公告 · 傲慢无礼象群</title>
+  <!-- Font Awesome 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #0b0f1a, #030508);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 动态粒子背景 */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.8);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* 主卡片 — 毛玻璃 */
+    .glass-card {
+      position: relative;
+      z-index: 10;
+      max-width: 700px;
+      width: 100%;
+      background: rgba(10, 14, 23, 0.65);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border-radius: 3rem;
+      padding: 3rem 2.8rem;
+      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    /* 头部 */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 1.5rem;
+    }
+
+    .brand h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f0f9ff 0%, #b6d4fe 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 i {
+      font-size: 1.6rem;
+      color: #ff7b9c;
+      filter: drop-shadow(0 0 8px rgba(255, 123, 156, 0.3));
+    }
+
+    .brand .sub {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.8rem;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand .sub i {
+      color: #c084fc;
+    }
+
+    /* 公告内容 */
+    .announcement-content {
+      margin: 1.5rem 0 1rem;
+      padding: 2rem 1.8rem;
+      background: rgba(20, 30, 50, 0.2);
+      border-radius: 1.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .announcement-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff7b9c, #c084fc, #4caf9e);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .announcement-content .vip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(192, 132, 252, 0.12);
+      color: #c084fc;
+      padding: 4px 16px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(192, 132, 252, 0.08);
+      margin-bottom: 1.2rem;
+    }
+
+    .announcement-content .vip-badge i {
+      font-size: 0.8rem;
+    }
+
+    .announcement-content .time {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .announcement-content .time i {
+      color: #ff7b9c;
+    }
+
+    .announcement-content .message {
+      color: #eef5ff;
+      font-size: 1.15rem;
+      font-weight: 400;
+      line-height: 1.8;
+      letter-spacing: 0.3px;
+    }
+
+    .announcement-content .message .highlight {
+      color: #c084fc;
+      font-weight: 500;
+    }
+
+    .announcement-content .lock-icon {
+      position: absolute;
+      bottom: 1rem;
+      right: 1.5rem;
+      color: rgba(255, 255, 255, 0.03);
+      font-size: 4rem;
+      pointer-events: none;
+    }
+
+    /* 底部 */
+    .footer-note {
+      margin-top: 2.5rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.1);
+      font-size: 0.7rem;
+      letter-spacing: 0.8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      padding-top: 1.8rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-note span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .glass-card {
+        padding: 2rem 1.2rem;
+        border-radius: 2rem;
+      }
+      .brand h1 {
+        font-size: 1.4rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .announcement-content {
+        padding: 1.5rem 1.2rem;
+      }
+      .announcement-content .message {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 粒子背景 -->
+  <div class="particles" aria-hidden="true">
+    <div class="particle" style="width: 8px; height: 8px; left: 10%; animation-duration: 18s; animation-delay: 0s;"></div>
+    <div class="particle" style="width: 14px; height: 14px; left: 25%; animation-duration: 22s; animation-delay: 2s;"></div>
+    <div class="particle" style="width: 6px; height: 6px; left: 45%; animation-duration: 16s; animation-delay: 4s;"></div>
+    <div class="particle" style="width: 20px; height: 20px; left: 70%; animation-duration: 25s; animation-delay: 1s;"></div>
+    <div class="particle" style="width: 10px; height: 10px; left: 85%; animation-duration: 19s; animation-delay: 3s;"></div>
+    <div class="particle" style="width: 12px; height: 12px; left: 55%; animation-duration: 21s; animation-delay: 5s;"></div>
+    <div class="particle" style="width: 16px; height: 16px; left: 5%; animation-duration: 24s; animation-delay: 7s;"></div>
+    <div class="particle" style="width: 7px; height: 7px; left: 92%; animation-duration: 17s; animation-delay: 6s;"></div>
+  </div>
+
+  <main class="glass-card">
+    <!-- 头部 -->
+    <div class="header">
+      <div class="brand">
+        <h1>
+          <i class="fas fa-bullhorn"></i> VIP 更新公告
+        </h1>
+        <div class="sub">
+          <i class="fas fa-crown"></i> 专属 · 仅VIP可见
+          <span style="color: rgba(255,255,255,0.15);">|</span>
+          <i class="fas fa-lock"></i> 2026.06.23
+        </div>
+      </div>
+    </div>
+
+    <!-- 公告内容 -->
+    <div class="announcement-content">
+      <div class="vip-badge">
+        <i class="fas fa-crown"></i> VIP 专属公告
+      </div>
+
+      <div class="time">
+        <i class="far fa-clock"></i> 21:30
+      </div>
+
+      <div class="message">
+        我们更新了 <span class="highlight">VIP 界面</span>，而且这个公告只有 <span class="highlight">VIP</span> 才能看到。
+      </div>
+
+      <div class="lock-icon">
+        <i class="fas fa-lock"></i>
+      </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer-note">
+      <span><i class="fas fa-elephant"></i> 傲慢无礼象群 · 2026</span>
+      <span><i class="fas fa-lock" style="color: rgba(255,255,255,0.05);"></i> 仅限VIP</span>
+      <span><i class="fas fa-code-branch"></i> 升级版 · 玻璃态</span>
+    </div>
+  </main>
+
+</body>
+</html>

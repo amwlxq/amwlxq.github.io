@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python教程 · 傲慢无礼象群 VIP</title>
+  <!-- Font Awesome 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #0b0f1a, #030508);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 动态粒子背景 */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.8);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* 主卡片 — 毛玻璃 */
+    .glass-card {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      width: 100%;
+      background: rgba(10, 14, 23, 0.65);
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border-radius: 3rem;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    /* 头部 */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 1.5rem;
+    }
+
+    .brand h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f0f9ff 0%, #b6d4fe 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 i {
+      font-size: 1.8rem;
+      color: #4caf9e;
+      filter: drop-shadow(0 0 8px rgba(76, 175, 158, 0.3));
+    }
+
+    .brand .sub {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.85rem;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand .sub i {
+      color: #4caf9e;
+    }
+
+    .back-link {
+      color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.5rem 1.2rem;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    /* 欢迎语 */
+    .welcome-msg {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1rem;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      padding-left: 1.2rem;
+      border-left: 3px solid rgba(76, 175, 158, 0.3);
+    }
+
+    .welcome-msg i {
+      color: #4caf9e;
+      margin-right: 6px;
+    }
+
+    /* 教程列表 */
+    .tutorial-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin: 0.5rem 0 0.5rem;
+    }
+
+    .tutorial-item {
+      background: rgba(20, 30, 50, 0.2);
+      backdrop-filter: blur(4px);
+      border-radius: 1.2rem;
+      padding: 0.8rem 1.8rem;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tutorial-item:hover {
+      background: rgba(30, 50, 80, 0.4);
+      border-color: rgba(76, 175, 158, 0.2);
+      transform: translateX(6px);
+      box-shadow: 0 8px 24px -6px rgba(76, 175, 158, 0.08);
+    }
+
+    .tutorial-item .left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .tutorial-item .icon-circle-small {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #4caf9e;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      flex-shrink: 0;
+      transition: 0.3s;
+    }
+
+    .tutorial-item:hover .icon-circle-small {
+      background: rgba(76, 175, 158, 0.1);
+      border-color: rgba(76, 175, 158, 0.2);
+    }
+
+    .tutorial-item .info h2 {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #eef5ff;
+      letter-spacing: 0.2px;
+    }
+
+    .tutorial-item .info .video-tag {
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 1px 12px;
+      border-radius: 30px;
+      margin-left: 10px;
+    }
+
+    .tutorial-item .arrow {
+      color: rgba(255, 255, 255, 0.15);
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .tutorial-item:hover .arrow {
+      color: rgba(255, 255, 255, 0.4);
+      transform: translateX(4px);
+    }
+
+    /* 底部 */
+    .footer-note {
+      margin-top: 2.8rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.1);
+      font-size: 0.7rem;
+      letter-spacing: 0.8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.02);
+      padding-top: 1.8rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-note span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .glass-card {
+        padding: 2rem 1.2rem;
+        border-radius: 2rem;
+      }
+      .brand h1 {
+        font-size: 1.5rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .tutorial-item {
+        padding: 0.7rem 1.2rem;
+      }
+      .tutorial-item .info h2 {
+        font-size: 0.95rem;
+      }
+      .tutorial-item .info .video-tag {
+        margin-left: 0;
+        display: inline-block;
+        margin-top: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 粒子背景 -->
+  <div class="particles" aria-hidden="true">
+    <div class="particle" style="width: 8px; height: 8px; left: 10%; animation-duration: 18s; animation-delay: 0s;"></div>
+    <div class="particle" style="width: 14px; height: 14px; left: 25%; animation-duration: 22s; animation-delay: 2s;"></div>
+    <div class="particle" style="width: 6px; height: 6px; left: 45%; animation-duration: 16s; animation-delay: 4s;"></div>
+    <div class="particle" style="width: 20px; height: 20px; left: 70%; animation-duration: 25s; animation-delay: 1s;"></div>
+    <div class="particle" style="width: 10px; height: 10px; left: 85%; animation-duration: 19s; animation-delay: 3s;"></div>
+    <div class="particle" style="width: 12px; height: 12px; left: 55%; animation-duration: 21s; animation-delay: 5s;"></div>
+    <div class="particle" style="width: 16px; height: 16px; left: 5%; animation-duration: 24s; animation-delay: 7s;"></div>
+    <div class="particle" style="width: 7px; height: 7px; left: 92%; animation-duration: 17s; animation-delay: 6s;"></div>
+  </div>
+
+  <main class="glass-card">
+    <!-- 头部 -->
+    <div class="header">
+      <div class="brand">
+        <h1>
+          <i class="fab fa-python"></i> Python 教程
+        </h1>
+        <div class="sub">
+          <i class="fas fa-crown" style="color: #c084fc;"></i> VIP 专属
+          <span style="color: rgba(255,255,255,0.15);">|</span>
+          <i class="fas fa-play-circle"></i> 从零开始 · 趣味入门
+        </div>
+      </div>
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> 返回首页
+      </a>
+    </div>
+
+    <!-- 欢迎语 -->
+    <div class="welcome-msg">
+      <i class="fas fa-laptop-code"></i> 傲慢无礼象群的网站的 Python 教程
+    </div>
+
+    <!-- 教程列表 -->
+    <div class="tutorial-list">
+      <!-- 前言 -->
+      <a href="python1.mp4" class="tutorial-item">
+        <div class="left">
+          <div class="icon-circle-small"><i class="fas fa-play"></i></div>
+          <div class="info">
+            <h2>
+              前言
+              <span class="video-tag"><i class="fas fa-video"></i> 视频</span>
+            </h2>
+          </div>
+        </div>
+        <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+
+      <!-- 下载python -->
+      <a href="python2.mp4" class="tutorial-item">
+        <div class="left">
+          <div class="icon-circle-small"><i class="fas fa-download"></i></div>
+          <div class="info">
+            <h2>
+              下载 Python
+              <span class="video-tag"><i class="fas fa-video"></i> 视频</span>
+            </h2>
+          </div>
+        </div>
+        <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+
+      <!-- 下载pycharm -->
+      <a href="python3.mp4" class="tutorial-item">
+        <div class="left">
+          <div class="icon-circle-small"><i class="fas fa-download"></i></div>
+          <div class="info">
+            <h2>
+              下载 PyCharm
+              <span class="video-tag"><i class="fas fa-video"></i> 视频</span>
+            </h2>
+          </div>
+        </div>
+        <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+
+      <!-- print教程 -->
+      <a href="python4.mp4" class="tutorial-item">
+        <div class="left">
+          <div class="icon-circle-small"><i class="fas fa-print"></i></div>
+          <div class="info">
+            <h2>
+              print 教程
+              <span class="video-tag"><i class="fas fa-video"></i> 视频</span>
+            </h2>
+          </div>
+        </div>
+        <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+
+      <!-- print进阶教程 -->
+      <a href="python5.mp4" class="tutorial-item">
+        <div class="left">
+          <div class="icon-circle-small"><i class="fas fa-print"></i></div>
+          <div class="info">
+            <h2>
+              print 进阶教程
+              <span class="video-tag"><i class="fas fa-video"></i> 视频</span>
+            </h2>
+          </div>
+        </div>
+        <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+
+      <!-- 变量 -->
+      <a href="python6.MOV" class="tutorial-item">
+        <div class="left">
+          <div class="icon-circle-small"><i class="fas fa-code"></i></div>
+          <div class="info">
+            <h2>
+              变量
+              <span class="video-tag"><i class="fas fa-video"></i> 视频</span>
+            </h2>
+          </div>
+        </div>
+        <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer-note">
+      <span><i class="fas fa-elephant"></i> 傲慢无礼象群 · 2026</span>
+      <span><i class="fas fa-lock" style="color: rgba(255,255,255,0.05);"></i> VIP 专属教程</span>
+      <span><i class="fas fa-code-branch"></i> 升级版 · 玻璃态</span>
+    </div>
+  </main>
+
+</body>
+</html>
