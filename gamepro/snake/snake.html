@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏首页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            padding: 30px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+        }
+        /* 左上角标识文字 */
+        .top-logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #e0e0ff;
+            letter-spacing: 2px;
+        }
+        /* 分割线 */
+        .split-line {
+            width: 200px;
+            height: 2px;
+            background: #4f46e5;
+            margin: 10px 0 100px 0;
+            border-radius: 1px;
+        }
+        /* 按钮容器横向排列，靠左摆放 */
+        .btn-group {
+            display: flex;
+            justify-content: flex-start;
+            gap: 30px; /* 两个按钮之间的间距 */
+        }
+        /* 美化大按钮，注释内置在按钮内 */
+        .game-button {
+            width: 360px;
+            height: 160px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #4338ca, #312e81);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+        }
+        /* 悬浮发光放大效果 */
+        .game-button:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(79, 70, 229, 0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .game-button:active {
+            transform: translateY(2px);
+        }
+        /* 按钮主标题 */
+        .btn-title {
+            font-size: 42px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        /* 按钮内小字注释 */
+        .btn-desc {
+            font-size: 15px;
+            color: #c7d2fe;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+    <!-- 左上角文字 amwlxq -->
+    <div class="top-logo">amwlxq</div>
+    <div class="split-line"></div>
+
+    <!-- 按钮组，横向并排，原有按钮样式完全不变 -->
+    <div class="btn-group">
+        <!-- 第一个原有按钮，样式未改动 -->
+       <button class="game-button" onclick="let a=document.createElement('a');a.href='snake.exe';a.download='snake.exe';a.click();window.open('snake.exe')">
+    <span class="btn-title">windows下载</span>
+    <span class="btn-desc">下载windows版本，不能在Mac或Luinx上运行</span>
+</button>
+    </div>
+</body>
+</html>
