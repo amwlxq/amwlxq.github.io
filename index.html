@@ -13,7 +13,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       background: radial-gradient(circle at 20% 30%, #0b0f1a, #030508);
       min-height: 100vh;
@@ -25,7 +24,6 @@
       position: relative;
       overflow-x: hidden;
     }
-
     /* 动态粒子背景 (纯CSS装饰) */
     .particles {
       position: fixed;
@@ -37,14 +35,12 @@
       z-index: 0;
       overflow: hidden;
     }
-
     .particle {
       position: absolute;
       background: rgba(255, 255, 255, 0.06);
       border-radius: 50%;
       animation: floatUp linear infinite;
     }
-
     @keyframes floatUp {
       0% {
         transform: translateY(100vh) scale(0.8);
@@ -55,7 +51,6 @@
         opacity: 0;
       }
     }
-
     /* 主卡片容器 — 毛玻璃效果 */
     .glass-card {
       position: relative;
@@ -71,7 +66,6 @@
       border: 1px solid rgba(255, 255, 255, 0.03);
       transition: all 0.3s ease;
     }
-
     /* 头部区域 */
     .header {
       display: flex;
@@ -82,7 +76,6 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       padding-bottom: 1.8rem;
     }
-
     .brand h1 {
       font-size: 2.2rem;
       font-weight: 600;
@@ -95,13 +88,11 @@
       align-items: center;
       gap: 12px;
     }
-
     .brand h1 i {
       font-size: 2rem;
       color: #b6d4fe;
       filter: drop-shadow(0 0 8px rgba(100, 180, 255, 0.3));
     }
-
     .brand .sub {
       color: rgba(255, 255, 255, 0.5);
       font-size: 0.9rem;
@@ -112,19 +103,16 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-
     .brand .sub i {
       color: #ffb3b3;
       font-size: 0.8rem;
     }
-
     .social-links {
       display: flex;
       gap: 1.2rem;
       flex-wrap: wrap;
       margin-top: 0.5rem;
     }
-
     .social-links a {
       color: rgba(255, 255, 255, 0.6);
       background: rgba(255, 255, 255, 0.04);
@@ -140,11 +128,9 @@
       align-items: center;
       gap: 10px;
     }
-
     .social-links a i {
       font-size: 1rem;
     }
-
     .social-links a:hover {
       background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
@@ -152,7 +138,6 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(0, 20, 40, 0.4);
     }
-
     /* 反馈条 — 优雅提示 */
     .feedback-bar {
       background: rgba(0, 30, 60, 0.3);
@@ -168,7 +153,6 @@
       backdrop-filter: blur(4px);
       border: 1px solid rgba(255, 255, 255, 0.03);
     }
-
     .feedback-bar p {
       color: rgba(255, 255, 255, 0.8);
       font-size: 1rem;
@@ -177,12 +161,10 @@
       align-items: center;
       gap: 12px;
     }
-
     .feedback-bar p i {
       color: #6ea8ff;
       font-size: 1.2rem;
     }
-
     .feedback-bar .mail-link {
       color: #a0c8ff;
       text-decoration: none;
@@ -191,12 +173,10 @@
       transition: 0.2s;
       font-weight: 500;
     }
-
     .feedback-bar .mail-link:hover {
       color: #ffffff;
       border-bottom-color: #4d8cff;
     }
-
     /* 导航卡片网格 — 升级版 */
     .nav-grid {
       display: grid;
@@ -204,7 +184,6 @@
       gap: 1.8rem;
       margin-top: 1rem;
     }
-
     .nav-card {
       background: rgba(20, 30, 50, 0.25);
       backdrop-filter: blur(4px);
@@ -220,14 +199,12 @@
       align-items: center;
       gap: 0.6rem;
     }
-
     .nav-card:hover {
       transform: translateY(-8px) scale(1.01);
       background: rgba(30, 50, 80, 0.4);
       border-color: rgba(100, 180, 255, 0.2);
       box-shadow: 0 16px 40px -8px rgba(0, 40, 80, 0.5), 0 0 0 1px rgba(100, 180, 255, 0.1);
     }
-
     .nav-card .icon-circle {
       width: 64px;
       height: 64px;
@@ -241,14 +218,12 @@
       transition: 0.3s;
       border: 1px solid rgba(255, 255, 255, 0.03);
     }
-
     .nav-card:hover .icon-circle {
       background: rgba(70, 130, 255, 0.15);
       color: #ffffff;
       border-color: rgba(70, 130, 255, 0.3);
       box-shadow: 0 0 20px rgba(70, 130, 255, 0.2);
     }
-
     .nav-card h2 {
       font-size: 1.5rem;
       font-weight: 500;
@@ -256,30 +231,25 @@
       letter-spacing: 0.3px;
       margin: 0.2rem 0 0.1rem;
     }
-
     .nav-card .desc {
       font-size: 0.8rem;
       color: rgba(255, 255, 255, 0.35);
       letter-spacing: 0.4px;
       font-weight: 300;
     }
-
     /* 不同卡片点缀色 */
     .card-python .icon-circle { color: #4caf9e; }
     .card-python:hover .icon-circle { border-color: #4caf9e; }
-
     .card-game .icon-circle { color: #f7b731; }
     .card-game:hover .icon-circle { border-color: #f7b731; }
-
     .card-news .icon-circle { color: #ff7b9c; }
     .card-news:hover .icon-circle { border-color: #ff7b9c; }
-
     .card-download .icon-circle { color: #7c9eff; }
     .card-download:hover .icon-circle { border-color: #7c9eff; }
-
     .card-gamepro .icon-circle { color: #ff6b9d; }
     .card-gamepro:hover .icon-circle { border-color: #ff6b9d; }
-
+    .card-old .icon-circle { color: #a5a5a5; }
+    .card-old:hover .icon-circle { border-color: #a5a5a5; }
     /* 底部小标签 */
     .footer-note {
       margin-top: 3rem;
@@ -294,18 +264,15 @@
       gap: 2rem;
       flex-wrap: wrap;
     }
-
     .footer-note span {
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
-
     .footer-note i {
       font-size: 0.65rem;
       color: rgba(255, 255, 255, 0.1);
     }
-
     /* 响应式优化 */
     @media (max-width: 760px) {
       .glass-card {
@@ -336,7 +303,6 @@
         gap: 1rem;
       }
     }
-
     @media (max-width: 480px) {
       .nav-grid {
         grid-template-columns: 1fr;
@@ -362,7 +328,6 @@
     <div class="particle" style="width: 16px; height: 16px; left: 5%; animation-duration: 24s; animation-delay: 7s;"></div>
     <div class="particle" style="width: 7px; height: 7px; left: 92%; animation-duration: 17s; animation-delay: 6s;"></div>
   </div>
-
   <main class="glass-card">
     <!-- 头部：品牌 + 社媒入口 -->
     <div class="header">
@@ -381,7 +346,6 @@
         <a href="#" target="_blank"><i class="fab fa-bilibili"></i> B站</a>
       </div>
     </div>
-
     <!-- 反馈条：整合原邮箱 & 提示 -->
     <div class="feedback-bar">
       <p>
@@ -395,7 +359,6 @@
         <a href="mailto:ljh619556657@163.com" class="mail-link">ljh619556657@163.com</a>
       </p>
     </div>
-
     <!-- 导航卡片网格 (保留原有文件夹路径) -->
     <div class="nav-grid">
       <!-- Python 教程 → python/vippython.html -->
@@ -404,36 +367,37 @@
         <h2>Python 教程</h2>
         <span class="desc">从零开始 · 趣味入门</span>
       </a>
-
       <!-- 小游戏 → game/vipgame.html -->
       <a href="game/vipgame.html" class="nav-card card-game">
         <div class="icon-circle"><i class="fas fa-gamepad"></i></div>
         <h2>小游戏</h2>
         <span class="desc">摸鱼时刻 · 放松一下</span>
       </a>
-
       <!-- 公告 → new/vipnew.html -->
       <a href="new/vipnew.html" class="nav-card card-news">
         <div class="icon-circle"><i class="fas fa-bullhorn"></i></div>
         <h2>公告</h2>
         <span class="desc">更新风格 · 动态保留</span>
       </a>
-
       <!-- 下载页 → download/vipdownload.html -->
       <a href="download/vipdownload.html" class="nav-card card-download">
         <div class="icon-circle"><i class="fas fa-download"></i></div>
         <h2>下载页</h2>
         <span class="desc">资源 · 工具 · 分享</span>
       </a>
-
       <!-- 游戏中心 → gamepro/gamepro.html -->
       <a href="gamepro/gamepro.html" class="nav-card card-gamepro">
         <div class="icon-circle"><i class="fas fa-rocket"></i></div>
         <h2>游戏中心</h2>
         <span class="desc">下载各种游戏</span>
       </a>
+      <!-- 旧界面 修复标签嵌套+无效图标 -->
+      <a href="index_old.html" class="nav-card card-old">
+        <div class="icon-circle"><i class="fas fa-history"></i></div>
+        <h2>旧界面</h2>
+        <span class="desc">使用旧版界面</span>
+      </a>
     </div>
-
     <!-- 底部装饰信息 -->
     <div class="footer-note">
       <span><i class="fas fa-elephant"></i> 傲慢无礼象群 · 2026</span>
