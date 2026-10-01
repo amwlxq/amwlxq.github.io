@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>双人打怪小游戏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+canvas{border:2px solid #444;background:#e8f4e8}
+body{display:flex;flex-direction:column;align-items:center;padding:10px;background:#ddd;font-family:Arial}
+.info{margin-bottom:8px;font-size:16px}
+#ui-panel{margin-bottom:6px;font-size:17px}
+#menu{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+}
+#menu button{padding:10px 20px;font-size:18px;margin:8px 6px;cursor:pointer}
+.saveItem{margin:6px 0;padding:8px;border:1px solid #aaa;text-align:left}
+.saveItem button{padding:4px 8px;font-size:13px;margin:0 3px}
+.hidden{display:none}
+#deathOverlay{
+    position:fixed;
+    top:0;left:0;right:0;bottom:0;
+    background:rgba(0,0,0,0.85);
+    color:#ff2222;
+    font-size:48px;
+    font-weight:bold;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+    text-align:center;
+}
+#deathOverlay button{margin-top:30px;font-size:20px}
+#topNotify{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:120px;
+    font-size:24px;
+    color:red;
+}
+#coinInfo{position:absolute;top:10px;left:10px;font-size:18px}
+#shopPanel{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    background:white;
+    border:2px solid #333;
+    padding:20px;
+    z-index:100;
+}
+#shopPanel button{margin:4px;padding:6px 10px;cursor:pointer}
+#saveToast{
+    position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);
+    background:#222;color:#fff;padding:16px 24px;font-size:20px;z-index:200;
+    display:none;border-radius:8px;
+}
+#saveList{text-align:left;max-width:440px;margin:10px auto}
+</style>
+</head>
+<body>
+<div id="ui-panel"></div>
+<div id="menu">
+  <h2>选择游戏模式</h2>
+  <br>
+  <button id="btn1">单人模式</button>
+  <button id="btn2">双人模式</button>
+  <br>
+  <button id="btnShowSave">查看存档</button>
+  <div id="saveList" class="hidden"></div>
+</div>
+<div class="info hidden" id="hint">P1:WASD｜P2:↑↓←→｜自动攻击｜脱战后缓慢回血｜ESC返回菜单｜C=保存并退出｜B打开商店<br>新建游戏按C生成存档并退回菜单；读档后按C覆盖存档并退回菜单</div>
+<div id="coinInfo" class="hidden"></div>
+<div id="topNotify"></div>
+<canvas id="cv" width="800" height="500" class="hidden"></canvas>
+<div id="shopPanel" class="hidden">
+  <h3>商店（当局生效）</h3>
+  <div>金币：<span id="shopCoin"></span></div>
+  <p><button id="buyDmg">攻击力+3 (20金币)</button></p>
+  <p><button id="buyHeal">完全回血 (30金币)</button></p>
+  <p><button id="buyRange">攻击范围+8 (25金币)</button></p>
+  <p id="reviveRow" class="hidden"><button id="buyRevive">复活死亡队友 (200金币)</button></p>
+  <br>
+  <button id="closeShop">关闭商店(B)</button>
+</div>
+<div id="deathOverlay">
+  <div>
+    <div id="deathText"></div>
+    <br>
+    <button id="backMenuBtn">返回模式选择</button>
+  </div>
+</div>
+<div id="saveToast"></div>
+<script>
+const canvas=document.getElementById("cv");
+const ctx=canvas.getContext("2d");
+const uiPanel=document.getElementById("ui-panel");
+const MAP={w:800,h:500};
+const keysDown={};
+let players=[];
+let monsters=[];
+const MAX_MONSTER=12;
+let running=false;
+let playerCountMode=1;
+let gold=0;
+let shopOpen=false;
+let activeSlot=null;
+const REGEN_RATE=0.02;
+const HURT_COOLDOWN=120;
+
+const PLAYER_TEMPLATE=[
+    {x:120,y:250,size:16,hp:100,maxHp:100,speed:2.6,color:"#2979ff",dmg:9,atkRange:70,atkCd:0,atkCdMax:22,hurtCd:0,alive:true,kills:0},
+    {x:680,y:250,size:16,hp:100,maxHp:100,speed:2.6,color:"#ff5722",dmg:9,atkRange:70,atkCd:0,atkCdMax:22,hurtCd:0,alive:true,kills:0}
+];
+
+const menu=document.getElementById("menu");
+const hint=document.getElementById("hint");
+const deathOverlay=document.getElementById("deathOverlay");
+const deathText=document.getElementById("deathText");
+const backMenuBtn=document.getElementById("backMenuBtn");
+const topNotify=document.getElementById("topNotify");
+const coinInfo=document.getElementById("coinInfo");
+const shopPanel=document.getElementById("shopPanel");
+const shopCoinEl=document.getElementById("shopCoin");
+const closeShopBtn=document.getElementById("closeShop");
+const saveToast=document.getElementById("saveToast");
+const btnShowSave=document.getElementById("btnShowSave");
+const saveListEl=document.getElementById("saveList");
+const reviveRow=document.getElementById("reviveRow");
+
+canvas.tabIndex=0;
+canvas.addEventListener("click",()=>canvas.focus());
+
+function showToast(text){
+    saveToast.innerText=text;
+    saveToast.style.display="block";
+    setTimeout(()=>{saveToast.style.display="none"},1200);
+}
+
+function getSaves(){
+    const raw=localStorage.getItem("gameSaves");
+    return raw?JSON.parse(raw):[];
+}
+function setSaves(arr){
+    localStorage.setItem("gameSaves",JSON.stringify(arr));
+}
+function saveGame(){
+    const saves=getSaves();
+    if(activeSlot!==null){
+        saves[activeSlot]={
+            playerCountMode,gold,
+            players:JSON.parse(JSON.stringify(players)),
+            monsters:JSON.parse(JSON.stringify(monsters)),
+            saveTime:new Date().toLocaleString()
+        };
+        setSaves(saves);
+        showToast(`已覆盖存档${activeSlot+1}`);
+    }else{
+        saves.push({
+            playerCountMode,gold,
+            players:JSON.parse(JSON.stringify(players)),
+            monsters:JSON.parse(JSON.stringify(monsters)),
+            saveTime:new Date().toLocaleString()
+        });
+        setSaves(saves);
+        activeSlot=saves.length-1;
+        showToast(`已新建存档${activeSlot+1}`);
+    }
+    showMenu();
+}
+function loadSave(index){
+    const saves=getSaves();
+    const s=saves[index];
+    if(!s)return;
+    activeSlot=index;
+    playerCountMode=s.playerCountMode;
+    gold=s.gold;
+    players=JSON.parse(JSON.stringify(s.players));
+    monsters=JSON.parse(JSON.stringify(s.monsters));
+    menu.classList.add("hidden");
+    hint.classList.remove("hidden");
+    coinInfo.classList.remove("hidden");
+    canvas.classList.remove("hidden");
+    topNotify.innerText="";
+    updateShopUI();
+    running=true;
+    gameLoop();
+}
+function deleteSave(idx){
+    let arr=getSaves();
+    arr.splice(idx,1);
+    setSaves(arr);
+    if(activeSlot===idx) activeSlot=null;
+    renderSaveList();
+}
+function renderSaveList(){
+    const saves=getSaves();
+    if(saves.length===0){
+        saveListEl.innerHTML="<p>暂无存档</p>";
+        return;
+    }
+    let html="";
+    saves.forEach((s,i)=>{
+        html+=`<div class="saveItem">存档${i+1}<br>
+        <small>${s.saveTime}｜人数${s.playerCountMode}</small><br>
+        <button data-action="load" data-idx="${i}">加载</button>
+        <button data-action="del" data-idx="${i}">删除</button>
+        </div>`;
+    });
+    saveListEl.innerHTML=html;
+}
+saveListEl.addEventListener("click",e=>{
+    const btn=e.target.closest("button");
+    if(!btn) return;
+    const action=btn.dataset.action;
+    const idx=Number(btn.dataset.idx);
+    if(action==="load") loadSave(idx);
+    else if(action==="del") deleteSave(idx);
+});
+
+backMenuBtn.onclick=()=>{
+    deathOverlay.style.display="none";
+    showMenu();
+};
+btnShowSave.onclick=()=>{
+    saveListEl.classList.toggle("hidden");
+    renderSaveList();
+};
+closeShopBtn.onclick=()=>{shopOpen=false;shopPanel.classList.add("hidden");};
+document.getElementById("buyDmg").onclick=()=>{
+    if(gold>=20){gold-=20;players.forEach(p=>{if(p.alive)p.dmg+=3;});updateShopUI();}
+};
+document.getElementById("buyHeal").onclick=()=>{
+    if(gold>=30){gold-=30;players.forEach(p=>{if(p.alive){p.hp=p.maxHp;p.hurtCd=0;}});updateShopUI();}
+};
+document.getElementById("buyRange").onclick=()=>{
+    if(gold>=25){gold-=25;players.forEach(p=>{if(p.alive)p.atkRange+=8;});updateShopUI();}
+};
+document.getElementById("buyRevive").onclick=()=>{
+    if(gold>=200){
+        const hasDead=players.some(p=>!p.alive);
+        if(hasDead){
+            gold-=200;
+            players.forEach(p=>{if(!p.alive){p.alive=true;p.hp=p.maxHp;p.hurtCd=0;}});
+            updateShopUI();
+        }
+    }
+};
+function updateShopUI(){
+    shopCoinEl.innerText=gold;
+    coinInfo.innerText=`金币：${gold}`;
+    reviveRow.className=playerCountMode===2?"":"hidden";
+}
+function updateUIPanel(){
+    if(playerCountMode===1){
+        const p=players[0];
+        uiPanel.innerText=`击杀：${p.kills} | ${p.alive?"存活":"已阵亡"}`;
+    }else{
+        const p1=players[0];
+        const p2=players[1];
+        uiPanel.innerText=`玩家1击杀：${p1.kills} ${p1.alive?"存活":"已阵亡"}｜玩家2击杀：${p2.kills} ${p2.alive?"存活":"已阵亡"}`;
+    }
+}
+
+function onKeyDown(e){
+    keysDown[e.code]=true;
+    if(e.code==="Escape"&&running){
+        showMenu();
+    }
+    if(e.code==="KeyC"&&running){
+        saveGame();
+    }
+    if(e.code==="KeyB"&&running){
+        shopOpen=!shopOpen;
+        shopPanel.className=shopOpen?"":"hidden";
+        if(shopOpen) updateShopUI();
+    }
+}
+function onKeyUp(e){
+    keysDown[e.code]=false;
+}
+window.addEventListener("keydown",onKeyDown);
+window.addEventListener("keyup",onKeyUp);
+
+function spawnMonster(){
+    if(monsters.length>=MAX_MONSTER) return;
+    monsters.push({
+        x:80+Math.random()*(MAP.w-160),
+        y:80+Math.random()*(MAP.h-160),
+        size:16,
+        hp:45,
+        maxHp:45,
+        speed:0.65,
+        color:"#689f38",
+        dmg:5,
+        atkCd:0,
+        coinDrop:5
+    })
+}
+function dist(a,b){
+    return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function showMenu(){
+    running=false;
+    players=[];
+    monsters=[];
+    gold=0;
+    shopOpen=false;
+    shopPanel.classList.add("hidden");
+    menu.classList.remove("hidden");
+    hint.classList.add("hidden");
+    coinInfo.classList.add("hidden");
+    canvas.classList.add("hidden");
+    uiPanel.innerText="";
+    topNotify.innerText="";
+}
+
+function startGame(pc){
+    activeSlot=null;
+    playerCountMode=pc;
+    menu.classList.add("hidden");
+    hint.classList.remove("hidden");
+    coinInfo.classList.remove("hidden");
+    canvas.classList.remove("hidden");
+    players=[];
+    monsters=[];
+    gold=0;
+    topNotify.innerText="";
+    for(let i=0;i<pc;i++){
+        let p=JSON.parse(JSON.stringify(PLAYER_TEMPLATE[i]));
+        p.atkCd=0;
+        p.hurtCd=0;
+        p.alive=true;
+        p.kills=0;
+        players.push(p);
+    }
+    for(let i=0;i<6;i++) spawnMonster();
+    updateShopUI();
+    updateUIPanel();
+    running=true;
+    gameLoop();
+}
+document.getElementById("btn1").onclick=()=>startGame(1);
+document.getElementById("btn2").onclick=()=>startGame(2);
+
+function checkGameOver(){
+    const aliveList=players.filter(p=>p.alive);
+    if(playerCountMode===1){
+        if(!players[0].alive){
+            deathText.innerText="你已阵亡";
+            deathOverlay.style.display="flex";
+            running=false;
+        }
+    }else{
+        if(aliveList.length===0){
+            deathText.innerText="所有角色阵亡";
+            deathOverlay.style.display="flex";
+            running=false;
+        }
+    }
+}
+
+function gameLoop(){
+    if(!running) return;
+    if(shopOpen){requestAnimationFrame(gameLoop);return;}
+
+    for(const p of players){
+        if(!p.alive) continue;
+        if(p.hurtCd>0)p.hurtCd--;
+        if(p.hurtCd===0&&p.hp<p.maxHp){
+            p.hp=Math.min(p.maxHp,p.hp+REGEN_RATE);
+        }
+        if(keysDown["KeyW"]) p.y-=p.speed;
+        if(keysDown["KeyS"]) p.y+=p.speed;
+        if(keysDown["KeyA"]) p.x-=p.speed;
+        if(keysDown["KeyD"]) p.x+=p.speed;
+        p.x=Math.max(p.size,Math.min(MAP.w-p.size,p.x));
+        p.y=Math.max(p.size,Math.min(MAP.h-p.size,p.y));
+        if(p.atkCd>0){
+            p.atkCd--;
+        }else{
+            p.atkCd=p.atkCdMax;
+            for(const m of monsters){
+                if(dist(p,m)<p.atkRange){
+                    m.hp-=p.dmg;
+                    if(m.hp<=0){
+                        p.kills+=1;
+                    }
+                }
+            }
+        }
+    }
+
+    for(const m of monsters){
+        let nearest=null,minD=99999;
+        for(const p of players){
+            if(!p.alive) continue;
+            const d=dist(m,p);
+            if(d<minD){minD=d;nearest=p;}
+        }
+        if(nearest){
+            if(minD>24){
+                const dx=nearest.x-m.x;
+                const dy=nearest.y-m.y;
+                const l=Math.hypot(dx,dy);
+                m.x+=dx/l*m.speed;
+                m.y+=dy/l*m.speed;
+            }else{
+                if(m.atkCd<=0){
+                    nearest.hp-=m.dmg;
+                    nearest.hurtCd=HURT_COOLDOWN;
+                    if(nearest.hp<=0){
+                        nearest.hp=0;
+                        nearest.alive=false;
+                    }
+                    m.atkCd=60;
+                }
+            }
+        }
+        if(m.atkCd>0) m.atkCd--;
+    }
+
+    monsters=monsters.filter(m=>{
+        if(m.hp<=0){
+            gold+=m.coinDrop;
+            updateShopUI();
+            return false;
+        }
+        return true;
+    });
+    while(monsters.length<6) spawnMonster();
+
+    checkGameOver();
+    updateUIPanel();
+    ctx.clearRect(0,0,MAP.w,MAP.h);
+    for(const p of players){
+        if(!p.alive) continue;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle=p.color;
+        ctx.fill();
+        ctx.strokeStyle="rgba(0,0,255,0.18)";
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.atkRange,0,Math.PI*2);
+        ctx.stroke();
+        ctx.fillStyle="#000";
+        ctx.fillText(Math.round(p.hp)+"/"+p.maxHp,p.x-18,p.y-p.size-4);
+    }
+    for(const m of monsters){
+        ctx.beginPath();
+        ctx.arc(m.x,m.y,m.size,0,Math.PI*2);
+        ctx.fillStyle=m.color;
+        ctx.fill();
+        ctx.fillStyle="#000";
+        ctx.fillText(Math.round(m.hp)+"/"+m.maxHp,m.x-16,m.y-m.size-4);
+    }
+    requestAnimationFrame(gameLoop);
+}
+</script>
+</body>
+</html>
