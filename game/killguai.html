@@ -157,7 +157,7 @@ function saveGame(){
             saveTime:new Date().toLocaleString()
         };
         setSaves(saves);
-        showToast(`已覆盖存档${activeSlot+1}`);
+        showToast(已覆盖存档${activeSlot+1});
     }else{
         saves.push({
             playerCountMode,gold,
@@ -167,7 +167,7 @@ function saveGame(){
         });
         setSaves(saves);
         activeSlot=saves.length-1;
-        showToast(`已新建存档${activeSlot+1}`);
+        showToast(已新建存档${activeSlot+1});
     }
     showMenu();
 }
@@ -204,11 +204,7 @@ function renderSaveList(){
     }
     let html="";
     saves.forEach((s,i)=>{
-        html+=`<div class="saveItem">存档${i+1}<br>
-        <small>${s.saveTime}｜人数${s.playerCountMode}</small><br>
-        <button data-action="load" data-idx="${i}">加载</button>
-        <button data-action="del" data-idx="${i}">删除</button>
-        </div>`;
+        html+=<div class="saveItem">存档${i+1}<br>         <small>${s.saveTime}｜人数${s.playerCountMode}</small><br>         <button data-action="load" data-idx="${i}">加载</button>         <button data-action="del" data-idx="${i}">删除</button>         </div>;
     });
     saveListEl.innerHTML=html;
 }
@@ -251,17 +247,17 @@ document.getElementById("buyRevive").onclick=()=>{
 };
 function updateShopUI(){
     shopCoinEl.innerText=gold;
-    coinInfo.innerText=`金币：${gold}`;
+    coinInfo.innerText=金币：${gold};
     reviveRow.className=playerCountMode===2?"":"hidden";
 }
 function updateUIPanel(){
     if(playerCountMode===1){
         const p=players[0];
-        uiPanel.innerText=`击杀：${p.kills} | ${p.alive?"存活":"已阵亡"}`;
+        uiPanel.innerText=击杀：${p.kills} | ${p.alive?"存活":"已阵亡"};
     }else{
         const p1=players[0];
         const p2=players[1];
-        uiPanel.innerText=`玩家1击杀：${p1.kills} ${p1.alive?"存活":"已阵亡"}｜玩家2击杀：${p2.kills} ${p2.alive?"存活":"已阵亡"}`;
+        uiPanel.innerText=玩家1击杀：${p1.kills} ${p1.alive?"存活":"已阵亡"}｜玩家2击杀：${p2.kills} ${p2.alive?"存活":"已阵亡"};
     }
 }
 
@@ -288,8 +284,8 @@ window.addEventListener("keyup",onKeyUp);
 function spawnMonster(){
     if(monsters.length>=MAX_MONSTER) return;
     monsters.push({
-        x:80+Math.random()*(MAP.w-160),
-        y:80+Math.random()*(MAP.h-160),
+        x:80+Math.random()(MAP.w-160),
+        y:80+Math.random()(MAP.h-160),
         size:16,
         hp:45,
         maxHp:45,
@@ -368,27 +364,58 @@ function gameLoop(){
     if(!running) return;
     if(shopOpen){requestAnimationFrame(gameLoop);return;}
 
-    for(const p of players){
-        if(!p.alive) continue;
-        if(p.hurtCd>0)p.hurtCd--;
-        if(p.hurtCd===0&&p.hp<p.maxHp){
-            p.hp=Math.min(p.maxHp,p.hp+REGEN_RATE);
+    // P1 控制 WASD
+    const p1=players[0];
+    if(p1.alive){
+        if(p1.hurtCd>0)p1.hurtCd--;
+        if(p1.hurtCd===0&&p1.hp<p1.maxHp){
+            p1.hp=Math.min(p1.maxHp,p1.hp+REGEN_RATE);
         }
-        if(keysDown["KeyW"]) p.y-=p.speed;
-        if(keysDown["KeyS"]) p.y+=p.speed;
-        if(keysDown["KeyA"]) p.x-=p.speed;
-        if(keysDown["KeyD"]) p.x+=p.speed;
-        p.x=Math.max(p.size,Math.min(MAP.w-p.size,p.x));
-        p.y=Math.max(p.size,Math.min(MAP.h-p.size,p.y));
-        if(p.atkCd>0){
-            p.atkCd--;
+        if(keysDown["KeyW"]) p1.y-=p1.speed;
+        if(keysDown["KeyS"]) p1.y+=p1.speed;
+        if(keysDown["KeyA"]) p1.x-=p1.speed;
+        if(keysDown["KeyD"]) p1.x+=p1.speed;
+        p1.x=Math.max(p1.size,Math.min(MAP.w-p1.size,p1.x));
+        p1.y=Math.max(p1.size,Math.min(MAP.h-p1.size,p1.y));
+        if(p1.atkCd>0){
+            p1.atkCd--;
         }else{
-            p.atkCd=p.atkCdMax;
+            p1.atkCd=p1.atkCdMax;
             for(const m of monsters){
-                if(dist(p,m)<p.atkRange){
-                    m.hp-=p.dmg;
+                if(dist(p1,m)<p1.atkRange){
+                    m.hp-=p1.dmg;
                     if(m.hp<=0){
-                        p.kills+=1;
+                        p1.kills+=1;
+                    }
+                }
+            }
+        }
+    }
+
+    // P2 控制 方向键 ArrowUp ArrowDown ArrowLeft ArrowRight
+    if(playerCountMode===2){
+        const p2=players[1];
+        if(p2.alive){
+            if(p2.hurtCd>0)p2.hurtCd--;
+            if(p2.hurtCd===0&&p2.hp<p2.maxHp){
+                p2.hp=Math.min(p2.maxHp,p2.hp+REGEN_RATE);
+            }
+            if(keysDown["ArrowUp"]) p2.y-=p2.speed;
+            if(keysDown["ArrowDown"]) p2.y+=p2.speed;
+            if(keysDown["ArrowLeft"]) p2.x-=p2.speed;
+            if(keysDown["ArrowRight"]) p2.x+=p2.speed;
+            p2.x=Math.max(p2.size,Math.min(MAP.w-p2.size,p2.x));
+            p2.y=Math.max(p2.size,Math.min(MAP.h-p2.size,p2.y));
+            if(p2.atkCd>0){
+                p2.atkCd--;
+            }else{
+                p2.atkCd=p2.atkCdMax;
+                for(const m of monsters){
+                    if(dist(p2,m)<p2.atkRange){
+                        m.hp-=p2.dmg;
+                        if(m.hp<=0){
+                            p2.kills+=1;
+                        }
                     }
                 }
             }
@@ -407,8 +434,8 @@ function gameLoop(){
                 const dx=nearest.x-m.x;
                 const dy=nearest.y-m.y;
                 const l=Math.hypot(dx,dy);
-                m.x+=dx/l*m.speed;
-                m.y+=dy/l*m.speed;
+                m.x+=dx/lm.speed;
+                m.y+=dy/lm.speed;
             }else{
                 if(m.atkCd<=0){
                     nearest.hp-=m.dmg;
@@ -440,12 +467,12 @@ function gameLoop(){
     for(const p of players){
         if(!p.alive) continue;
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.arc(p.x,p.y,p.size,0,Math.PI2);
         ctx.fillStyle=p.color;
         ctx.fill();
         ctx.strokeStyle="rgba(0,0,255,0.18)";
         ctx.beginPath();
-        ctx.arc(p.x,p.y,p.atkRange,0,Math.PI*2);
+        ctx.arc(p.x,p.y,p.atkRange,0,Math.PI2);
         ctx.stroke();
         ctx.fillStyle="#000";
         ctx.fillText(Math.round(p.hp)+"/"+p.maxHp,p.x-18,p.y-p.size-4);
